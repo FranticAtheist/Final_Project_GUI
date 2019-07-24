@@ -55,7 +55,7 @@ public class MainFrame extends JFrame {
 		        }
 		    }
 		} catch (Exception e) {
-		    // If Nimbus is not available, you can set the GUI to another look and feel. test
+		    // If Nimbus is not available, you can set the GUI to another look and feel.
 		}
 		setLayout(new BorderLayout());
 		toolbar = new Toolbar();
