@@ -80,7 +80,6 @@ public class MainFrame extends JFrame {
 		setJMenuBar(createMenubar());
 
 		textPanel.setEditable(false);
-
 		formPanel.setCheckBoxEventListener(new CheckBoxListener() {
 			public void CheckBoxEventOccurred(CheckBoxEvent e) {
 				textPanel.setEditable(e.isEditable());
@@ -99,7 +98,7 @@ public class MainFrame extends JFrame {
 						toolbar.getDisconnectButton().setVisible(true);
 						toolbar.getConnectButton().setVisible(false);
 						toolbar.getChangeSettingsButton().setVisible(true);
-						connectedPort.getPort().setComPortParameters(9600, 8, SerialPort.ONE_STOP_BIT,
+						connectedPort.getPort().setComPortParameters(460800, 8, SerialPort.ONE_STOP_BIT,
 								SerialPort.NO_PARITY);
 						connectedPort.getPort().setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
 						comPortInput = connectedPort.getPort().getInputStream();
@@ -162,7 +161,7 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 	}
 
-
+		
 	private JMenuBar createMenubar() {
 
 		JMenuBar menuBar = new JMenuBar();

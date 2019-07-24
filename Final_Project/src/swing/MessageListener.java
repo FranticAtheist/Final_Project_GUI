@@ -46,14 +46,22 @@ public class MessageListener implements SerialPortMessageListener {
 				bb.put(delimitedMessage[i + 1]);
 				bb.put(delimitedMessage[i]);
 			}
-			System.out.println((short) bb.getInt(0));
-			System.out.println((short) bb.getInt(4));
-			System.out.println((short) bb.getInt(8));
-			System.out.println((short) bb.getInt(12));
+			int[] acc = new int[4];
+			for (int i=0;i<4;i++) {
+				acc[i] = (short)bb.getInt(4*i);
+				System.out.println(acc[i]);
+			}
+			
+//			System.out.println((short) bb.getInt(0));
+//			System.out.println((short) bb.getInt(4));
+//			System.out.println((short) bb.getInt(8));
+//			System.out.println((short) bb.getInt(12));
 
 //			textPanel.append("got data");
+			System.out.println();
 			for (int i = 0; i < 3; i++) {
-				textPanel.append(String.valueOf(((short) bb.getInt(i)/4096.0)));
+//				short value = (short) bb.getInt(i*4);
+				textPanel.append(String.valueOf(acc[i]/4096.0));
 				textPanel.append("\n");
 			}
 		}
@@ -69,5 +77,16 @@ public class MessageListener implements SerialPortMessageListener {
 		// System.out.println((int)temp[i]);
 		// }
 	}
+//	public class javaFevalFunc{
+//	    public void main(String[] args) throws Exception{
+//	        MatlabEngine eng = MatlabEngine.startMatlab();
+//	        double[] a = {2.0 ,4.0, 6.0};
+//	        double[] roots = eng.feval("sqrt", a);
+//	        for (double e: roots) {
+//	            System.out.println(e);
+//	        }
+//	        eng.close();
+//	    }
+//	}
 
 }
