@@ -32,9 +32,7 @@ public class FormPanel extends JPanel {
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private JLabel nameLabel;
 	private JLabel commandLabel;
-	private JTextField nameField;
 	private JTextField commandField;
 	private JButton sendBtn;
 	private FormListener formListener;
@@ -56,7 +54,6 @@ public class FormPanel extends JPanel {
 	private JRadioButton oddRadio;
 	private JRadioButton noneRadio;
 	private ButtonGroup parityGroup;
-	private StringBuffer buffer;
 	private JLabel limitLabel;
 
 	public FormPanel() {
@@ -64,9 +61,9 @@ public class FormPanel extends JPanel {
 		dim.width = 500;
 		setPreferredSize(dim);
 
-		nameLabel = new JLabel("Name: ");
+		new JLabel("Name: ");
 		commandLabel = new JLabel("command: ");
-		nameField = new JTextField(10);
+		new JTextField(10);
 		commandField = new JTextField(10);
 		commandField.setPreferredSize(new Dimension(20, 20));
 		modeList = new JList<String>();
@@ -78,7 +75,7 @@ public class FormPanel extends JPanel {
 		delayCombo.setVisible(false);
 		delayLabel = new JLabel("Delay: ");
 		delayLabel.setVisible(false);
-		buffer = new StringBuffer();
+		new StringBuffer();
 		limitLabel = new JLabel("invalid delay");
 		limitLabel.setVisible(false);
 		

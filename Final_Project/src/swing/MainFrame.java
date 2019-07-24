@@ -11,10 +11,8 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Arrays;
 
-import javax.jws.soap.InitParam;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
 import javax.swing.JFrame;
@@ -25,8 +23,6 @@ import javax.swing.UIManager;
 import javax.swing.UIManager.LookAndFeelInfo;
 import javax.swing.filechooser.FileFilter;
 import javax.swing.plaf.DimensionUIResource;
-import javax.swing.text.SimpleAttributeSet;
-
 import com.fazecast.jSerialComm.SerialPort;
 
 public class MainFrame extends JFrame {
@@ -40,11 +36,8 @@ public class MainFrame extends JFrame {
 	private FormPanel formPanel;
 	private PortSettings connectedPort;
 	private InputStream comPortInput;
-	private OutputStream comPortOutput;
 	private MessageListener portListener;
 	private JFileChooser fileChooser;
-	private String fileName;
-
 	public MainFrame() {
 
 		super("Final Project");try {
@@ -61,6 +54,7 @@ public class MainFrame extends JFrame {
 		toolbar = new Toolbar();
 		textPanel = new TextArea();
 		formPanel = new FormPanel();
+		portListener = new MessageListener();
 
 		fileChooser = new JFileChooser();
 
@@ -93,33 +87,6 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		formPanel.setFormListener(new FormListener() {
-			public void formEventOccurred(FormEvent e) {
-
-				if (e.isCommand()) {
-					textPanel.append(e.getText());
-				} else if (e.getMode() == 0) {
-
-					Integer typeMode = e.getMode();
-					portListener.setText(e.getText());
-					portListener.setMode(e.getMode());
-					sendMode(typeMode);
-
-				} else if (e.getMode() == 1) {
-					portListener.setText(parseTextToCommand(textPanel.getText()));
-					portListener.setMode(e.getMode());
-					sendMode(e.getMode());
-					// String test = parseTextToCommand(textPanel.getText());
-				} else if (e.getMode() == 2) {
-					Integer typeMode = e.getMode();
-					portListener.setMode(e.getMode());
-					portListener.setText(fileName + Utility.END_OF_TEXT + textPanel.getText());
-					sendMode(typeMode);
-				}
-
-			}
-
-		});
 
 		toolbar.setToolbarListener(new ToolbarListener() {
 			public void toolbarEventOccurred(ToolbarEvent ev) {
@@ -136,22 +103,30 @@ public class MainFrame extends JFrame {
 								SerialPort.NO_PARITY);
 						connectedPort.getPort().setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
 						comPortInput = connectedPort.getPort().getInputStream();
-						comPortOutput = connectedPort.getPort().getOutputStream();
+						connectedPort.getPort().getOutputStream();
 						try {
 							comPortInput.skip(comPortInput.available());
 						} catch (IOException e) {
 							System.out.println(e);
 							e.printStackTrace();
 						}
-						portListener = new MessageListener(connectedPort.getPort());
-						portListener.setTextPanel(textPanel);
 						System.out.println("successfully opened the port");
+						//portListener.setTextPanel(textPanel);
+						portListener.setTextPanel(textPanel);
+						connectedPort.getPort().addDataListener(portListener);
+						try {
+							Thread.sleep(5000);
+						}catch (Exception e) {
+							e.printStackTrace();
+						}
 					} else {
 						System.out.println("unable to open the port");
 					}
+					
 
 				} else if (clicked == toolbar.getDisconnectButton()) {
 					if (connectedPort.getPort().closePort()) {
+						connectedPort.getPort().removeDataListener();
 						connectedPort.setConnected(false);
 						toolbar.getConnectButton().setVisible(true);
 						toolbar.getChangeSettingsButton().setVisible(false);
@@ -167,11 +142,6 @@ public class MainFrame extends JFrame {
 					changedSetteings.append(connectedPort.getBaudrate());
 					changedSetteings.append(connectedPort.getStopLength());
 					changedSetteings.append(connectedPort.getParityType());
-					portListener.setText(changedSetteings.toString());
-					portListener.setPortSettings(connectedPort);
-					portListener.setChangingPortSettings(true);
-					portListener.setMode(Utility.commandMode);
-					sendMode(Utility.commandMode);
 					
 					System.out
 							.println("change settings to: " + "baud: " + Utility.intBaudRates[connectedPort.getBaudrate()]
@@ -192,21 +162,6 @@ public class MainFrame extends JFrame {
 		setVisible(true);
 	}
 
-
-	private void sendMode(Integer typeMode) {
-		byte[] toSend = { (byte) (typeMode.byteValue() + '0') };
-		portListener.setDoneSending(false);
-		portListener.setToSendBytes(toSend);
-		portListener.setIndex(0);
-		try {
-			connectedPort.getPort().getOutputStream().write(toSend[0]);
-			connectedPort.getPort().getOutputStream().flush();
-			System.out.println("was sent: " + toSend[0]);
-		} catch (IOException e1) {
-			System.out.println(e1);
-			e1.printStackTrace();
-		}
-	}
 
 	private JMenuBar createMenubar() {
 
@@ -238,15 +193,12 @@ public class MainFrame extends JFrame {
 				if (fileChooser.showOpenDialog(MainFrame.this) == JFileChooser.APPROVE_OPTION) {
 					FileReader reader = null;
 					File selectedFile = fileChooser.getSelectedFile();
-					fileName = selectedFile.getName();
+					selectedFile.getName();
 					String filepath = selectedFile.getAbsolutePath();
 					try {
 						reader = new FileReader(filepath);
 						System.out.println(filepath);
 					} catch (FileNotFoundException e1) {
-						System.out.println(e1);
-						e1.printStackTrace();
-					} catch (IOException e1) {
 						System.out.println(e1);
 						e1.printStackTrace();
 					}

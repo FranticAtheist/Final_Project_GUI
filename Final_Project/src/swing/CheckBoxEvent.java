@@ -3,6 +3,10 @@ package swing;
 import java.util.EventObject;
 
 public class CheckBoxEvent extends EventObject {
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
 	private boolean editable;
 	public CheckBoxEvent(Object source) {
 		super(source);
