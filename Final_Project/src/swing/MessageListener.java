@@ -27,7 +27,7 @@ public class MessageListener implements SerialPortMessageListener {
 
 	@Override
 	public byte[] getMessageDelimiter() {
-		return new byte[] { (byte) 0x17, (byte) 0x17 };
+		return new byte[] { (byte) 0xFF, (byte) 0xFF };
 	}
 
 	@Override
@@ -63,6 +63,22 @@ public class MessageListener implements SerialPortMessageListener {
 //				short value = (short) bb.getInt(i*4);
 				textPanel.append(String.valueOf(acc[i]/4096.0));
 				textPanel.append("\n");
+			}
+		}
+		if(delimitedMessage.length == 4) {
+			for (int i = 0; i < delimitedMessage.length; i = i + 2) {
+				bb.put((byte) 0x00);
+				bb.put((byte) 0x00);
+				bb.put(delimitedMessage[i+1]);
+				bb.put(delimitedMessage[i]);
+			}
+			int pulse_time = (int)bb.getInt(0);
+			if(pulse_time == 0xf5f5) {
+				System.out.println("Senser to close!");
+			}
+			else {
+			float distance = (float) (pulse_time*64*50*(331.3+0.606*28.8)/24000000);
+			System.out.println(distance + " cm");
 			}
 		}
 		// for(int i=0; i < 8 ;i=i+2) {
