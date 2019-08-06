@@ -98,7 +98,7 @@ public class MainFrame extends JFrame {
 						toolbar.getDisconnectButton().setVisible(true);
 						toolbar.getConnectButton().setVisible(false);
 						toolbar.getChangeSettingsButton().setVisible(true);
-						connectedPort.getPort().setComPortParameters(460800, 8, SerialPort.ONE_STOP_BIT,
+						connectedPort.getPort().setComPortParameters(230400, 8, SerialPort.ONE_STOP_BIT,
 								SerialPort.NO_PARITY);
 						connectedPort.getPort().setComPortTimeouts(SerialPort.TIMEOUT_WRITE_BLOCKING, 0, 0);
 						comPortInput = connectedPort.getPort().getInputStream();

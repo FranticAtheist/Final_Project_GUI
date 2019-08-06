@@ -79,6 +79,8 @@ public class MessageListener implements SerialPortMessageListener {
 			else {
 			float distance = (float) (pulse_time*64*50*(331.3+0.606*28.8)/24000000);
 			System.out.println(distance + " cm");
+			textPanel.append(String.valueOf(distance));
+			textPanel.append("\n");
 			}
 		}
 		// for(int i=0; i < 8 ;i=i+2) {
